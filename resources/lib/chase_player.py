@@ -6,6 +6,8 @@ class ChasePlayer(xbmc.Player):
     def __init__(self):
         xbmc.Player.__init__(self)
         self.chase_play_event = False
+        self.orig_file_size = 0
+        self.orig_total_time = 0
 
     # check for a seek request past the end of the currently playing file.
     # if that file has grown since first starting it, then re-start the video and seek to our requested time
@@ -14,10 +16,8 @@ class ChasePlayer(xbmc.Player):
         # if so, stop and re-start the file to load the new video duration
         # note: after restarting the video and seeking to the initial time, this function will again be called
         #       hence, check if a chase play event (chase_play_event=True) is currently in progress
-        # note: if seek attempt occurs past the original duration of the video
-        #       seek_offset will reflect the time elapsed since the end of the video. add this to the restart time
         if not self.chase_play_event and self.video_is_file and \
-                (time >= self.orig_total_time*1000 or seek_offset < 0) and \
+                time >= self.orig_total_time*1000 and \
                 self.orig_file_size < self.get_playing_file_size():
             xbmc.log("Chase Player detected in-progress recording.", level=xbmc.LOGNOTICE)
             xbmc.log("time: %s, offset: %s, total_time: %s, orig_size: %s, size: %s" % (time, seek_offset,
@@ -29,6 +29,8 @@ class ChasePlayer(xbmc.Player):
             self.play(self.video_file_name, windowed=False)
             # flag that a chase play event occurred
             self.chase_play_event = True
+            # note: if seek attempt occurs past the original duration of the video
+            # seek_offset will reflect the time elapsed since the end of the video. add this to the restart time
             if seek_offset < 0:
                 self.restart_seek_time = self.orig_total_time-(seek_offset/1000)
             else:
@@ -61,7 +63,7 @@ class ChasePlayer(xbmc.Player):
         self.chase_play_event = False
         
         # update the video file's size and duration
-        if video_is_file:
+        if self.video_is_file:
             self.orig_file_size = self.get_playing_file_size()
             self.orig_total_time = self.getTotalTime()
 
