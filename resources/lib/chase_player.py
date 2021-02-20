@@ -37,6 +37,9 @@ class ChasePlayer(xbmc.Player):
             # seek_offset will reflect the time elapsed since the end of the video. add this to the restart time
             if seek_offset < 0:
                 self.restart_seek_time = self.orig_total_time-(seek_offset/1000)
+            # restart the video at the previous end point without adding the desired seek time
+            elif self.xbmc_addon.getSetting('restart_end_point') == "true" and time > seek_offset:
+                self.restart_seek_time = (time-seek_offset)/1000
             else:
                 self.restart_seek_time = time/1000
 
@@ -71,7 +74,7 @@ class ChasePlayer(xbmc.Player):
                 if self.isPlayingVideo() and not self.video_file_name.startswith("pvr"):
                     self.video_is_file = True
                 else:
-                    self.video_if_file = False
+                    self.video_is_file = False
 
         # clear the chase play event flag
         self.chase_play_event = False

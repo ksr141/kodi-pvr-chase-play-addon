@@ -29,3 +29,7 @@ msgstr ""
 msgctxt "#32002"
 msgid "End Video Buffer (in seconds)"
 msgstr ""
+
+msgctxt "#32003"
+msgid "Restart at previous end point"
+msgstr ""

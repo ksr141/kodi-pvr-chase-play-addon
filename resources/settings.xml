@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
     <setting id="end_buffer" type="number" label="32002" default="10"/>
+    <setting id="restart_end_point" type="bool" label="32003" default="false"/>
     <setting id="debug" type="bool" label="32001" default="false"/>
 </settings>
 
